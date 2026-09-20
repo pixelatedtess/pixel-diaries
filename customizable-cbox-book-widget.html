@@ -1,0 +1,1382 @@
+<!-- =========================================================
+     REALISTIC CBOX GUESTBOOK BOOK
+     Blogger HTML/JavaScript Widget
+     =========================================================
+
+     CUSTOMIZE YOUR WIDGET HERE
+
+     Only change the two values below:
+     1. BOOK_COVER_IMAGE = your cover image URL
+     2. CBOX_URL         = your Cbox iframe URL
+
+     Example Cbox URL:
+     https://www5.cbox.ws/box/?boxid=123456&boxtag=ABCDEF
+     ========================================================= -->
+
+<script>
+  var BOOK_WIDGET_SETTINGS = {
+    BOOK_COVER_IMAGE: "PASTE-YOUR-BOOK-COVER-IMAGE-URL-HERE",
+    CBOX_URL: "PASTE-YOUR-CBOX-URL-HERE"
+  };
+</script>
+
+<div class="cbox-book-widget">
+
+  <div class="cbox-book" id="chatBook">
+
+    <!-- =========================
+         OPEN BOOK / BASE PAGES
+         ========================= -->
+
+    <div class="book-inside">
+
+      <!-- LEFT PAGE -->
+      <div class="book-page left-page"></div>
+
+      <!-- RIGHT PAGE -->
+      <div class="book-page right-page">
+
+        <div class="chat-container">
+          <iframe
+            id="bookCbox"
+            src=""
+            width="100%"
+            height="100%"
+            allowtransparency="yes"
+            allow="autoplay"
+            frameborder="0"
+            marginheight="0"
+            marginwidth="0"
+            scrolling="auto">
+          
+        </iframe
+></div>
+
+        <button
+          class="close-book"
+          id="closeBook"
+          type="button">
+          close
+        
+
+      </button
+></div>
+
+    </div>
+
+
+    <!-- =========================
+         TURNING PAPER SHEETS
+         ========================= -->
+
+    <div class="turn-page page-one">
+      <div class="page-front"></div>
+      <div class="page-back"></div>
+    </div>
+
+    <div class="turn-page page-two">
+      <div class="page-front"></div>
+      <div class="page-back"></div>
+    </div>
+
+    <div class="turn-page page-three">
+      <div class="page-front"></div>
+      <div class="page-back"></div>
+    </div>
+
+    <div class="turn-page page-four">
+      <div class="page-front"></div>
+      <div class="page-back"></div>
+    </div>
+
+
+    <!-- =========================
+         FRONT COVER
+         ========================= -->
+
+    <div class="book-cover" id="bookCover">
+
+      <div class="cover-front">
+
+        <img
+          id="bookCoverImage"
+          src=""
+          alt="Guestbook">
+
+        <div class="cover-light"></div>
+
+      </img
+></div>
+
+      <!-- Blank inside of cover -->
+      <div class="cover-back"></div>
+
+    </div>
+
+  </div>
+
+
+  <div class="open-text" id="openText">
+    click to open
+  </div>
+
+</div>
+
+
+<style>
+
+/* =========================================================
+   WIDGET
+   ========================================================= */
+
+.cbox-book-widget {
+  width: 100%;
+  min-height: 285px;
+
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+  align-items: center;
+
+  padding: 12px 0;
+
+  box-sizing: border-box;
+
+  perspective: 1800px;
+}
+
+
+/* =========================================================
+   BOOK
+   ========================================================= */
+
+.cbox-book {
+  position: relative;
+
+  width: 160px;
+  height: 240px;
+
+  transform-style: preserve-3d;
+
+  transition:
+    width 0.9s cubic-bezier(.4,0,.2,1);
+
+  filter:
+    drop-shadow(
+      0 9px 8px
+      rgba(45,30,25,0.23)
+    );
+}
+
+
+.cbox-book.open {
+  width: 320px;
+}
+
+
+/* =========================================================
+   OPEN BOOK
+   ========================================================= */
+
+.book-inside {
+  position: absolute;
+
+  top: 0;
+  left: 50%;
+
+  width: 320px;
+  height: 240px;
+
+  transform:
+    translateX(-50%);
+
+  display: flex;
+
+  opacity: 0;
+  visibility: hidden;
+
+  transition:
+    opacity 0.25s ease 0.20s,
+    visibility 0s linear 0.20s;
+}
+
+
+.cbox-book.open .book-inside {
+  opacity: 1;
+  visibility: visible;
+}
+
+
+/* =========================================================
+   BASE PAGES
+   ========================================================= */
+
+.book-page {
+  position: relative;
+
+  width: 160px;
+  height: 240px;
+
+  box-sizing: border-box;
+
+  border:
+    1px solid
+    rgba(145,115,85,0.30);
+}
+
+
+/* LEFT */
+
+.left-page {
+  border-radius:
+    6px 1px 1px 6px;
+
+  background:
+    linear-gradient(
+      to left,
+      #e2d1b8 0%,
+      #f0e2cc 5%,
+      #f8eedc 16%,
+      #fffaf0 55%,
+      #fbf4e8 100%
+    );
+
+  box-shadow:
+    inset -14px 0 20px
+    rgba(60,40,25,0.13),
+    inset 2px 0 4px
+    rgba(255,255,255,0.4);
+}
+
+
+/* RIGHT */
+
+.right-page {
+  padding: 7px;
+
+  border-radius:
+    1px 6px 6px 1px;
+
+  background:
+    linear-gradient(
+      to right,
+      #e2d1b8 0%,
+      #f0e2cc 5%,
+      #f8eedc 16%,
+      #fffaf0 55%,
+      #fbf4e8 100%
+    );
+
+  box-shadow:
+    inset 14px 0 20px
+    rgba(60,40,25,0.13),
+    inset -2px 0 4px
+    rgba(255,255,255,0.4);
+}
+
+
+/* =========================================================
+   SPINE SHADOW
+   ========================================================= */
+
+.left-page::after {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  right: -1px;
+
+  width: 18px;
+  height: 100%;
+
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      to right,
+      transparent,
+      rgba(45,28,18,0.18)
+    );
+
+  z-index: 5;
+}
+
+
+.right-page::before {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  left: 0;
+
+  width: 18px;
+  height: 100%;
+
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      to right,
+      rgba(45,28,18,0.18),
+      transparent
+    );
+
+  z-index: 5;
+}
+
+
+/* =========================================================
+   PAPER TEXTURE
+   ========================================================= */
+
+.left-page::before,
+.right-page::after {
+  content: "";
+
+  position: absolute;
+
+  inset: 0;
+
+  pointer-events: none;
+
+  opacity: 0.16;
+
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent 0px,
+      transparent 3px,
+      rgba(90,65,45,0.045) 4px
+    );
+}
+
+
+/* =========================================================
+   CHAT
+   ========================================================= */
+
+.chat-container {
+  position: relative;
+
+  width: 100%;
+  height: 218px;
+
+  box-sizing: border-box;
+
+  overflow: hidden;
+
+  border:
+    1px solid
+    rgba(145,115,85,0.35);
+
+  background: white;
+
+  z-index: 7;
+}
+
+
+.chat-container iframe {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  border: 0;
+}
+
+
+/* =========================================================
+   CLOSE BUTTON
+   ========================================================= */
+
+.close-book {
+  position: absolute;
+
+  right: 10px;
+  bottom: 1px;
+
+  padding: 0;
+
+  border: 0;
+
+  background: transparent;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size: 8px;
+
+  font-style: italic;
+
+  color: #766459;
+
+  cursor: pointer;
+
+  z-index: 40;
+}
+
+
+.close-book:hover {
+  text-decoration: underline;
+}
+
+
+/* =========================================================
+   COVER
+   ========================================================= */
+
+.book-cover {
+  position: absolute;
+
+  top: 0;
+  left: 50%;
+
+  width: 160px;
+  height: 240px;
+
+  transform:
+    translateX(-50%)
+    rotateY(0deg);
+
+  transform-origin:
+    left center;
+
+  transform-style:
+    preserve-3d;
+
+  z-index: 50;
+
+  cursor: pointer;
+
+  will-change: transform;
+}
+
+
+/* BOTH SIDES */
+
+.cover-front,
+.cover-back {
+  position: absolute;
+
+  inset: 0;
+
+  overflow: hidden;
+
+  box-sizing: border-box;
+
+  border-radius:
+    3px 6px 6px 3px;
+
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+
+/* FRONT */
+
+.cover-front {
+  background: #8c7568;
+
+  box-shadow:
+    4px 6px 11px
+    rgba(45,25,20,0.30);
+}
+
+
+.cover-front img {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+}
+
+
+/* INSIDE OF COVER */
+
+.cover-back {
+  transform:
+    rotateY(180deg);
+
+  background:
+    linear-gradient(
+      to right,
+      #d4c0a3 0%,
+      #e8d8be 8%,
+      #f3e7d2 40%,
+      #f7ecd9 100%
+    );
+
+  border:
+    1px solid
+    rgba(120,90,65,0.35);
+
+  box-shadow:
+    inset -10px 0 18px
+    rgba(60,40,25,0.10);
+}
+
+
+.cover-back::after {
+  content: "";
+
+  position: absolute;
+
+  inset: 5px;
+
+  border:
+    1px solid
+    rgba(120,90,70,0.10);
+
+  border-radius: 3px;
+}
+
+
+/* LIGHT ACROSS COVER */
+
+.cover-light {
+  position: absolute;
+
+  inset: 0;
+
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      110deg,
+      transparent 20%,
+      rgba(255,255,255,0.10) 45%,
+      transparent 62%
+    );
+}
+
+
+/* =========================================================
+   COVER OPENING
+   ========================================================= */
+
+.cbox-book.open .book-cover {
+  animation:
+    realisticCoverOpen
+    1.18s
+    cubic-bezier(.45,.02,.18,1)
+    forwards;
+}
+
+
+@keyframes realisticCoverOpen {
+
+  0% {
+    transform:
+      translateX(-50%)
+      rotateY(0deg)
+      rotateZ(0deg);
+  }
+
+  18% {
+    transform:
+      translateX(-25%)
+      rotateY(-25deg)
+      rotateZ(-0.3deg);
+  }
+
+  48% {
+    transform:
+      translateX(-6%)
+      rotateY(-92deg)
+      rotateZ(-0.7deg);
+  }
+
+  78% {
+    transform:
+      translateX(0)
+      rotateY(-164deg)
+      rotateZ(-0.15deg);
+  }
+
+  92% {
+    transform:
+      translateX(0)
+      rotateY(-183deg)
+      rotateZ(0.1deg);
+  }
+
+  100% {
+    transform:
+      translateX(0)
+      rotateY(-180deg)
+      rotateZ(0deg);
+  }
+
+}
+
+
+/* =========================================================
+   TURNING PAGES
+   ========================================================= */
+
+.turn-page {
+  position: absolute;
+
+  top: 3px;
+  left: 50%;
+
+  width: 156px;
+  height: 234px;
+
+  transform-origin:
+    0% 50%;
+
+  transform-style:
+    preserve-3d;
+
+  pointer-events: none;
+
+  opacity: 0;
+
+  z-index: 30;
+
+  will-change:
+    transform,
+    opacity,
+    filter;
+}
+
+
+/* =========================================================
+   PAPER SIDES
+   ========================================================= */
+
+.page-front,
+.page-back {
+  position: absolute;
+
+  inset: 0;
+
+  overflow: hidden;
+
+  box-sizing: border-box;
+
+  border:
+    1px solid
+    rgba(145,115,85,0.24);
+
+  border-radius:
+    1px 5px 5px 1px;
+
+  backface-visibility:
+    hidden;
+
+  -webkit-backface-visibility:
+    hidden;
+}
+
+
+/* FRONT */
+
+.page-front {
+  background:
+    linear-gradient(
+      90deg,
+      #e2d1b8 0%,
+      #f1e4cf 7%,
+      #fffaf0 50%,
+      #fbf3e4 80%,
+      #e7d6bd 100%
+    );
+
+  box-shadow:
+    3px 2px 6px
+    rgba(55,35,20,0.08);
+}
+
+
+/* BACK */
+
+.page-back {
+  transform:
+    rotateY(180deg);
+
+  background:
+    linear-gradient(
+      270deg,
+      #e2d1b8 0%,
+      #f1e4cf 7%,
+      #fffaf0 50%,
+      #fbf3e4 80%,
+      #e7d6bd 100%
+    );
+
+  box-shadow:
+    -3px 2px 6px
+    rgba(55,35,20,0.08);
+}
+
+
+/* PAPER TEXTURE */
+
+.page-front::before,
+.page-back::before {
+  content: "";
+
+  position: absolute;
+
+  inset: 0;
+
+  pointer-events: none;
+
+  opacity: 0.15;
+
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent 0px,
+      transparent 3px,
+      rgba(90,65,45,0.045) 4px
+    );
+}
+
+
+/* =========================================================
+   CURL HIGHLIGHT
+
+   This moves across the paper while it turns,
+   creating the illusion that the sheet is bending.
+   ========================================================= */
+
+.page-front::after,
+.page-back::after {
+  content: "";
+
+  position: absolute;
+
+  top: -5%;
+  bottom: -5%;
+
+  left: 75%;
+
+  width: 45%;
+
+  opacity: 0;
+
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(80,55,35,0.03) 18%,
+      rgba(70,45,30,0.15) 38%,
+      rgba(255,255,255,0.30) 52%,
+      rgba(255,255,255,0.08) 68%,
+      transparent 100%
+    );
+
+  filter:
+    blur(1.5px);
+}
+
+
+/* =========================================================
+   PAGE TURN TIMING
+   ========================================================= */
+
+.cbox-book.open .page-one {
+  animation:
+    naturalPageTurn
+    1.02s
+    cubic-bezier(.32,.02,.18,1)
+    0.23s
+    forwards;
+
+  z-index: 34;
+}
+
+
+.cbox-book.open .page-two {
+  animation:
+    naturalPageTurn
+    0.98s
+    cubic-bezier(.34,.03,.20,1)
+    0.45s
+    forwards;
+
+  z-index: 33;
+}
+
+
+.cbox-book.open .page-three {
+  animation:
+    naturalPageTurn
+    0.95s
+    cubic-bezier(.36,.04,.22,1)
+    0.65s
+    forwards;
+
+  z-index: 32;
+}
+
+
+.cbox-book.open .page-four {
+  animation:
+    naturalPageTurn
+    0.92s
+    cubic-bezier(.38,.05,.23,1)
+    0.83s
+    forwards;
+
+  z-index: 31;
+}
+
+
+/* =========================================================
+   REALISTIC PAGE TURN
+
+   The page compresses horizontally as it approaches
+   the camera edge-on, lifts slightly, then settles.
+   ========================================================= */
+
+@keyframes naturalPageTurn {
+
+  0% {
+    opacity: 0;
+
+    transform:
+      perspective(1100px)
+      rotateY(0deg)
+      rotateZ(0deg)
+      scaleX(1)
+      scaleY(1)
+      translateY(0);
+
+    filter:
+      brightness(1);
+  }
+
+
+  3% {
+    opacity: 1;
+  }
+
+
+  /* outer corner lifts */
+
+  12% {
+    transform:
+      perspective(1100px)
+      rotateY(-9deg)
+      rotateZ(-0.15deg)
+      scaleX(0.998)
+      scaleY(1.002)
+      translateY(-0.3px);
+
+    filter:
+      brightness(1.01);
+  }
+
+
+  /* page starts curling */
+
+  25% {
+    transform:
+      perspective(1100px)
+      rotateY(-31deg)
+      rotateZ(-0.5deg)
+      scaleX(0.985)
+      scaleY(1.006)
+      translateY(-1px);
+
+    filter:
+      brightness(0.97);
+  }
+
+
+  /* strongest curl */
+
+  40% {
+    transform:
+      perspective(1100px)
+      rotateY(-66deg)
+      rotateZ(-0.8deg)
+      scaleX(0.955)
+      scaleY(1.009)
+      translateY(-1.7px);
+
+    filter:
+      brightness(0.91);
+  }
+
+
+  /* edge-on */
+
+  50% {
+    transform:
+      perspective(1100px)
+      rotateY(-91deg)
+      rotateZ(-0.45deg)
+      scaleX(0.935)
+      scaleY(1.011)
+      translateY(-1.4px);
+
+    filter:
+      brightness(0.82);
+  }
+
+
+  /* backside appears */
+
+  61% {
+    transform:
+      perspective(1100px)
+      rotateY(-119deg)
+      rotateZ(0.45deg)
+      scaleX(0.952)
+      scaleY(1.009)
+      translateY(-1px);
+
+    filter:
+      brightness(0.90);
+  }
+
+
+  /* page begins falling */
+
+  75% {
+    transform:
+      perspective(1100px)
+      rotateY(-151deg)
+      rotateZ(0.7deg)
+      scaleX(0.982)
+      scaleY(1.004)
+      translateY(-0.3px);
+
+    filter:
+      brightness(0.96);
+  }
+
+
+  /* tiny overshoot */
+
+  90% {
+    opacity: 1;
+
+    transform:
+      perspective(1100px)
+      rotateY(-183deg)
+      rotateZ(-0.18deg)
+      scaleX(1.003)
+      scaleY(1);
+
+    filter:
+      brightness(0.99);
+  }
+
+
+  /* bounce back */
+
+  96% {
+    opacity: 1;
+
+    transform:
+      perspective(1100px)
+      rotateY(-178.5deg)
+      rotateZ(0.08deg)
+      scaleX(1);
+
+    filter:
+      brightness(1);
+  }
+
+
+  /* settles flat */
+
+  100% {
+    opacity: 0;
+
+    transform:
+      perspective(1100px)
+      rotateY(-180deg)
+      rotateZ(0deg)
+      scaleX(1)
+      scaleY(1);
+
+    filter:
+      brightness(1);
+  }
+
+}
+
+
+/* =========================================================
+   CURL LIGHT ANIMATIONS
+   ========================================================= */
+
+.cbox-book.open .page-one .page-front::after,
+.cbox-book.open .page-one .page-back::after {
+  animation:
+    curlLight 1.02s ease-in-out 0.23s forwards;
+}
+
+
+.cbox-book.open .page-two .page-front::after,
+.cbox-book.open .page-two .page-back::after {
+  animation:
+    curlLight 0.98s ease-in-out 0.45s forwards;
+}
+
+
+.cbox-book.open .page-three .page-front::after,
+.cbox-book.open .page-three .page-back::after {
+  animation:
+    curlLight 0.95s ease-in-out 0.65s forwards;
+}
+
+
+.cbox-book.open .page-four .page-front::after,
+.cbox-book.open .page-four .page-back::after {
+  animation:
+    curlLight 0.92s ease-in-out 0.83s forwards;
+}
+
+
+@keyframes curlLight {
+
+  0% {
+    left: 78%;
+    width: 28%;
+
+    opacity: 0;
+
+    transform:
+      skewX(-3deg);
+  }
+
+
+  12% {
+    opacity: 0.22;
+  }
+
+
+  30% {
+    left: 55%;
+    width: 42%;
+
+    opacity: 0.55;
+
+    transform:
+      skewX(-6deg);
+  }
+
+
+  47% {
+    left: 25%;
+    width: 55%;
+
+    opacity: 0.78;
+
+    transform:
+      skewX(-10deg);
+  }
+
+
+  55% {
+    left: 5%;
+    width: 62%;
+
+    opacity: 0.72;
+
+    transform:
+      skewX(9deg);
+  }
+
+
+  72% {
+    left: -10%;
+    width: 48%;
+
+    opacity: 0.42;
+
+    transform:
+      skewX(5deg);
+  }
+
+
+  90% {
+    left: -24%;
+    width: 34%;
+
+    opacity: 0.12;
+  }
+
+
+  100% {
+    left: -30%;
+    width: 30%;
+
+    opacity: 0;
+  }
+
+}
+
+
+/* =========================================================
+   PAGE SHADOW MOVING ACROSS THE BOOK
+   ========================================================= */
+
+.cbox-book::after {
+  content: "";
+
+  position: absolute;
+
+  top: 5px;
+  left: 50%;
+
+  width: 150px;
+  height: 230px;
+
+  pointer-events: none;
+
+  opacity: 0;
+
+  z-index: 19;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(55,35,25,0.19),
+      rgba(55,35,25,0.08) 28%,
+      transparent 76%
+    );
+
+  filter:
+    blur(4px);
+
+  transform-origin:
+    left center;
+}
+
+
+.cbox-book.open::after {
+  animation:
+    movingBookShadow
+    1.65s
+    ease
+    0.20s
+    forwards;
+}
+
+
+@keyframes movingBookShadow {
+
+  0% {
+    opacity: 0;
+
+    transform:
+      translateX(5px)
+      scaleX(0.2);
+  }
+
+
+  20% {
+    opacity: 0.28;
+
+    transform:
+      translateX(-5px)
+      scaleX(0.45);
+  }
+
+
+  45% {
+    opacity: 0.38;
+
+    transform:
+      translateX(-42px)
+      scaleX(0.65);
+  }
+
+
+  68% {
+    opacity: 0.25;
+
+    transform:
+      translateX(-90px)
+      scaleX(0.45);
+  }
+
+
+  100% {
+    opacity: 0;
+
+    transform:
+      translateX(-145px)
+      scaleX(0.15);
+  }
+
+}
+
+
+/* =========================================================
+   TEXT UNDER BOOK
+   ========================================================= */
+
+.open-text {
+  margin-top: 10px;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size: 9px;
+
+  font-style: italic;
+
+  letter-spacing: 0.5px;
+
+  color: #76665e;
+
+  transition:
+    opacity 0.25s ease;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 400px) {
+
+  .cbox-book-widget {
+    min-height: 260px;
+  }
+
+  .cbox-book.open {
+    transform:
+      scale(0.85);
+  }
+
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .cbox-book {
+    transition-duration: 0.01ms;
+  }
+
+  .turn-page,
+  .book-cover {
+    animation-duration: 0.01ms !important;
+  }
+
+}
+
+</style>
+
+
+<script>
+
+(function () {
+
+  /* =====================================================
+     APPLY USER SETTINGS
+     ===================================================== */
+
+  var coverImage =
+    document.getElementById("bookCoverImage");
+
+  var cbox =
+    document.getElementById("bookCbox");
+
+  if (typeof BOOK_WIDGET_SETTINGS !== "undefined") {
+
+    if (
+      coverImage &&
+      BOOK_WIDGET_SETTINGS.BOOK_COVER_IMAGE
+    ) {
+      coverImage.src =
+        BOOK_WIDGET_SETTINGS.BOOK_COVER_IMAGE;
+    }
+
+    if (
+      cbox &&
+      BOOK_WIDGET_SETTINGS.CBOX_URL
+    ) {
+      cbox.src =
+        BOOK_WIDGET_SETTINGS.CBOX_URL;
+    }
+
+  }
+
+
+  var book =
+    document.getElementById("chatBook");
+
+  var cover =
+    document.getElementById("bookCover");
+
+  var closeButton =
+    document.getElementById("closeBook");
+
+  var openText =
+    document.getElementById("openText");
+
+
+  if (!book || !cover || !closeButton || !openText) {
+    return;
+  }
+
+
+  /* =====================================================
+     OPEN BOOK
+     ===================================================== */
+
+  cover.addEventListener(
+    "click",
+    function () {
+
+      if (!book.classList.contains("open")) {
+
+        book.classList.remove("closing");
+
+        book.classList.add("open");
+
+        openText.style.opacity = "0";
+
+      }
+
+    }
+  );
+
+
+  /* =====================================================
+     CLOSE BOOK
+     ===================================================== */
+
+  closeButton.addEventListener(
+    "click",
+    function (event) {
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      book.classList.remove("open");
+
+      openText.style.opacity = "1";
+
+    }
+  );
+
+})();
+
+</script>
